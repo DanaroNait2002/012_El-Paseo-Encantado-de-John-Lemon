@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameEnding : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class GameEnding : MonoBehaviour
     [SerializeField]
     bool playerExit;
     [SerializeField]
+    bool playerCaught;
+    [SerializeField]
     float timer;
     [SerializeField]
     float imageDuration = 1f;
@@ -17,6 +20,8 @@ public class GameEnding : MonoBehaviour
     [Header("Canvas")]
     [SerializeField]
     CanvasGroup playerWon;
+    [SerializeField]
+    CanvasGroup playerLost;
 
     [Header("Player")]
     [SerializeField]
@@ -26,7 +31,11 @@ public class GameEnding : MonoBehaviour
     {
         if (playerExit == true) 
         {
-            EndLevel();
+            EndLevel(playerWon, false);
+        }
+        else if (playerCaught == true) 
+        { 
+            EndLevel(playerLost, true);
         }
     }
 
@@ -38,15 +47,27 @@ public class GameEnding : MonoBehaviour
         }
     }
 
-    void EndLevel()
+    public void CaughtPlayer()
+    {
+        playerCaught = true;
+    }
+
+    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart)
     {
         timer += Time.deltaTime;
 
-        playerWon.alpha = timer / fadeDuration;
+        imageCanvasGroup.alpha = timer / fadeDuration;
 
         if (timer > fadeDuration + imageDuration)
         {
-            Application.Quit();
+            if (doRestart)
+            {
+                SceneManager.LoadScene(0);
+            }
+            else
+            {
+                Application.Quit();
+            }
         }
     }
 }
