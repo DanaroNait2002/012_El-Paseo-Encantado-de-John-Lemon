@@ -28,12 +28,18 @@ public class Movement_Player : MonoBehaviour
     bool hasHorizontalInput;
     [SerializeField]
     Animator animatorPlayer;
+
+    [Header("Audio")]
+    [SerializeField]
+    AudioSource footsteps;
     
     void Start()
     {
         animatorPlayer = GetComponent<Animator>();
 
         rigidbodyPlayer = GetComponent<Rigidbody>();
+
+        footsteps = GetComponent<AudioSource>();
     }
 
     
@@ -56,6 +62,18 @@ public class Movement_Player : MonoBehaviour
 
         //Set the animation in case the bool is true
         animatorPlayer.SetBool("IsWalking", isWalking);
+
+        if (isWalking)
+        {
+            if (!footsteps.isPlaying)
+            {
+                footsteps.Play();
+            }
+        }
+        else
+        {
+            footsteps.Stop();
+        }
 
         //I HAVE NO IDEA
         Vector3 desiredForward = Vector3.RotateTowards(transform.forward, movementPlayer, turnSpeed * Time.deltaTime, 0f);
