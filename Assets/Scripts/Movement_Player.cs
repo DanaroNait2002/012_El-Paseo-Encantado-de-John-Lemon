@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Movement_Player : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Movement_Player : MonoBehaviour
     [Header("Movement Values")]
     [SerializeField]
     Vector3 movementPlayer;
+    [SerializeField]
+    Vector2 inputMovement;
     [SerializeField]
     float movementVertical;
     [SerializeField]
@@ -42,20 +45,33 @@ public class Movement_Player : MonoBehaviour
         footsteps = GetComponent<AudioSource>();
     }
 
+    public void OnMovement(InputAction.CallbackContext value)
+    {
+        inputMovement = value.ReadValue<Vector2>();
+
+        movementPlayer.Set(inputMovement.x, 0f, inputMovement.y);
+        movementPlayer.Normalize();
+    }
     
     void FixedUpdate()
     {
+        /*
         //Gives movement a value depending on the key being press on the keyboard
         movementVertical = Input.GetAxis("Vertical");
         movementHorizontal = Input.GetAxis("Horizontal");
         
+
         //Gives those values to a vector
         movementPlayer.Set(movementHorizontal, 0f, movementVertical);
         movementPlayer.Normalize();
+        */
+        float horizontal = inputMovement.x;
+        float vertical = inputMovement.y;
+
 
         //Makes a bool to know when a key is being press
-        hasVerticalInput = !Mathf.Approximately(movementVertical, 0f);
-        hasHorizontalInput = !Mathf.Approximately(movementHorizontal, 0f);
+        hasVerticalInput = !Mathf.Approximately(vertical, 0f);
+        hasHorizontalInput = !Mathf.Approximately(horizontal, 0f);
 
         //Makes the bool true if the conditions are true
         isWalking = hasHorizontalInput || hasVerticalInput;
